@@ -4,16 +4,22 @@ import pandas as pd
 from datetime import datetime, timedelta
 import os
 import time  # Import time for timing the analysis and download
+import json
 
-# Initialize EE library  
-# Access secret
-earthengine_credentials = os.environ.get("EE_Authentication")
+# Access the secret from environment variables
+credentials = os.getenv("EE_AUTHENTICATION")
 
-# Initialize Earth Engine with the secret credentials
-os.makedirs(os.path.expanduser("~/.config/earthengine/"), exist_ok=True)
-with open(os.path.expanduser("~/.config/earthengine/credentials"), "w") as f:
-    f.write(earthengine_credentials)
+if credentials is None:
+    st.error("Credentials not found. Please check your secret setup.")
+else:
+    # Load the credentials from the secret
+    credentials_dict = json.loads(credentials)
 
+    # Save the credentials to the expected location
+    os.makedirs(os.path.expanduser("~/.config/earthengine/"), exist_ok=True)
+    with open(os.path.expanduser("~/.config/earthengine/credentials"), "w") as f:
+        json.dump(credentials_dict, f)
+        
 ee.Initialize(project='ee-yashsacisro24')
 
 # Define the Sentinel-2 ImageCollection
