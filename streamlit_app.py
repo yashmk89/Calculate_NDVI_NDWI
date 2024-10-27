@@ -6,14 +6,17 @@ import os
 import time  # Import time for timing the analysis and download
 import json
 
-# Access the secret from environment variables
-credentials = os.getenv("EE_AUTHENTICATION")
+# Access the secret
+credentials = st.secrets.get("EE_AUTHENTICATION")
 
 if credentials is None:
     st.error("Credentials not found. Please check your secret setup.")
 else:
-    # Load the credentials from the secret
-    credentials_dict = json.loads(credentials)
+    try:
+        # Load the credentials from the secret
+        credentials_dict = json.loads(credentials)
+    except json.JSONDecodeError as e:
+        st.error(f"Error decoding JSON: {e}")
 
     # Save the credentials to the expected location
     os.makedirs(os.path.expanduser("~/.config/earthengine/"), exist_ok=True)
