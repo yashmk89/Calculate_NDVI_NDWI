@@ -1,0 +1,29 @@
+name: Deploy Streamlit App
+
+on:
+  push:
+    branches:
+      - main  # Change this to your default branch if needed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12.2'  # Specify your required Python version
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt  # Ensure you have a requirements.txt file
+
+      - name: Run Streamlit app
+        env:
+          EE_AUTHENTICATION: ${{ secrets.EE_AUTHENTICATION }}  # Access your secret here
+        run: |
+          streamlit run app.py  # Change this to your main Streamlit file
